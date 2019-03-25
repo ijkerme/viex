@@ -38,7 +38,6 @@ public final class EVIEditor extends AbstractAction {
     }
 
     private void viStateChange(boolean b) {
-        System.out.println(b);
         if (b) {
             listener.attach();
         } else {
