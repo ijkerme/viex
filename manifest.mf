@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+OpenIDE-Module: start.module.myvim/3
+OpenIDE-Module-Layer: start/module/myvim/layer.xml
+OpenIDE-Module-Localizing-Bundle: start/module/myvim/Bundle.properties
+OpenIDE-Module-Specification-Version: 3.1

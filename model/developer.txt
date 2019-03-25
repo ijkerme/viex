@@ -1,0 +1,99 @@
+commands list:
+ok	h & number  h
+ok	j & number  j
+ok	k & number  k
+ok	l & number  l
+no	CTRL+ e	
+no	CTRL+ y	
+ok      mk  move line up
+ok      mj  move line down
+ok      ck  copy line up
+ok      cj  copy line down
+ok      me  jump to next annotation
+
+ok	w	
+ok      W
+ok	b
+ok      B	
+ok	$	
+ok	^	
+
+ok	f	
+ok	F	
+ok	/	
+ok	n	
+ok	N	
+
+no	%	
+	
+ok	G	
+ok	gg	
+ok	nG	
+
+ok	ctrl U	
+ok	ctrl D  
+        ctrl Y
+        ctrl E
+
+ok      p,P       
+ok	s,S	
+ok	x	
+ok	X	
+ok	dd	
+ok	J	
+ok	u	
+no	^ R	
+ok      D
+ok	db	
+ok	dw	
+ok	diw	
+ok	daw	
+ok      cw
+ok	d$	
+ok	d^	
+ok      guu  gUU  g~~  ~
+
+ok	yy 	
+no	yw	
+
+ok	s,S	
+ok	r	
+ok	i	
+ok	a,A	
+ok	o	
+no	O	
+
+
+ok	:q!	
+ok	:w	
+ok	:wq	
+
+	
+ok	Y	Show line numbers in Netbeans editor
+
+ok      vb      Visual block mode
+ok      mp      Paste selected rectangle texts in visual block mode	
+
+VISUAL BLOCK MODE(vb command enter visual block mode):
+ok      h
+ok      j
+ok      k
+ok      l
+ok      d
+ok      y
+
+VISUAL MODE(v command enter visual mode):
+
+
+MISC MODE(t command enter misc mode):
+ok      b       open bookmarks list popup
+ok      t       open tab editors list popup
+ok      k       up in list popup
+ok      j       down in list popup
+ok      q       close list popup and enter command mode
+        number  jump to item
+
+need improved:
+	1.can't close editor when have only last a editor window...
+
+bugs to:yinnai@gmail.com

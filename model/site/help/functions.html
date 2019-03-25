@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+      <link rel="stylesheet" href="nbdocs:/org/netbeans/modules/usersguide/ide.css" type="text/css">
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+      <style type="text/css">
+          .modeHeader {
+            font-size: 20;
+            color: blue; }
+          .modeHeaderDesc {
+            color: gray; }
+      </style>
+    <title></title>
+  </head>
+  <body>
+      <div>
+          <h1>Commands List:</h1>
+          <table>
+              <tr><td>Command Chars</td><td>Description</td></tr>
+              <tr><td class="modeHeader">INSERT MODE</td><td class="modeHeaderDesc">I, A...</td></tr>
+              <tr><td>Escape</td><td>switch to command mode</td></tr>
+
+              <tr><td class="modeHeader">COMMAND MODE</td><td class="modeHeaderDesc">Escape</td></tr>
+              <tr><td>Nh</td><td>cursor N chars to the left, default one char</td></tr>
+              <tr><td>Nj</td><td>cursor N lines downward, default one line</td></tr>
+              <tr><td>Nk</td><td>cursor N lines upward, default one line</td></tr>
+              <tr><td>Nl</td><td>cursor N chars to the right, default one char</td></tr>
+              <tr><td>mk</td><td>move line up</td></tr>
+              <tr><td>mj</td><td>move line down</td></tr>
+              <tr><td>ck</td><td>copy line up</td></tr>
+              <tr><td>cj</td><td>copy line down</td></tr>
+              <tr><td>w</td><td>cursor to next word forward</td></tr>
+              <tr><td>b</td><td>cursor to previou word back</td></tr>
+              <tr><td>$</td><td>cursor to line end</td></tr>
+              <tr><td>^</td><td>cursor to line start</td></tr>
+              <tr><td>f</td><td>find char within line forward</td></tr>
+              <tr><td>F</td><td>find char within line back</td></tr>
+              <tr><td>/{pattern}</td><td>search forward for the Nth occurrence of {pattern}</td></tr>
+              <tr><td>n</td><td>forward increment search</td></tr>
+              <tr><td>N</td><td>back increment search</td></tr>
+              <tr><td>G</td><td>cursor to first line</td></tr>
+              <tr><td>gg</td><td>cursor to first line</td></tr>
+              <tr><td>gf</td><td>start editing the file whose name is under the cursor</td></tr>
+              <tr><td>ga</td><td>print ascii value of character under the cursor</td></tr>
+              <tr><td>g8</td><td>print hex value of bytes used in UTF-8 character under the cursou</td></tr>
+              <tr><td>g~~</td><td></td></tr>
+              <tr><td>guu</td><td>make text line lowercase</td></tr>
+              <tr><td>gUU</td><td>make text line uppercase</td></tr>
+              <tr><td>~</td><td>switch case of character under the cursor</td></tr>
+              <tr><td>&gt;&gt;</td><td>shift Nchars rightwards</td></tr>
+              <tr><td>&lt;&lt;</td><td>shift Nchars leftwards</td></tr>
+              <tr><td>C</td><td>change to the end of line</td></tr>
+              <tr><td>P</td><td>paste before</td></tr>
+              <tr><td>D</td><td>delete to the end of line</td></tr>
+              <tr><td>A</td><td>insert at end of line</td></tr>
+              <tr><td>S</td><td>change current line</td></tr>
+              <tr><td>:new</td><td>new or open file</td></tr>
+              <tr><td>NG</td><td>cursor to line N</td></tr>
+              <tr><td>p</td><td>paster texts from clipboard</td></tr>
+              <tr><td>s</td><td>delete selected texts and switch to INSERT MODE</td></tr>
+              <tr><td>x</td><td>delete char at cursor</td></tr>
+              <tr><td>X</td><td>delete char before cursor</td></tr>
+              <tr><td>dd</td><td>delete line</td></tr>
+              <tr><td>J</td><td>joined next line</td></tr>
+              <tr><td>u</td><td>undo</td></tr>
+              <tr><td>db</td><td>delete word before cursor</td></tr>
+              <tr><td>dw</td><td>delete word cursor</td></tr>
+              <tr><td>diw</td><td>delete entire word at cursor</td></tr>
+              <tr><td>daw</td><td>delete entire word at cursor</td></tr>
+              <tr><td>d$</td><td>delete chars from cursor to line end</td></tr>
+              <tr><td>d^</td><td>delete chars from cursor to line start</td></tr>
+              <tr><td>yy</td><td>yank</td></tr>
+              <tr><td>r{CHAR}</td><td>replace single char under cursor witch {CHAR}</td></tr>
+              <tr><td>i</td><td>insert before cursor, switch to INSERT MODE</td></tr>
+              <tr><td>I</td><td>insert at begin of line</td></tr>
+              <tr><td>a</td><td>insert back cursor, switch to INSERT MODE</td></tr>
+              <tr><td>o</td><td>open new line below at current line</td></tr>
+              <tr><td>Y</td><td>Show line numbers</td></tr>
+              <tr><td>mp</td><td>paster texts from viex Rectangle clipboard</td></tr>
+              <tr><td>za</td><td>Open a fold at cursor</td></tr>
+              <tr><td>zc</td><td>Close a fold at cursor</td></tr>
+              <tr><td>zM</td><td>Close all folds in the current nb editor</td></tr>
+              <tr><td>zR</td><td>Open all folds in the current nb editor</td></tr>
+
+              <tr><td class="modeHeader">Visual mode</td><td class="modeHeaderDesc">v command in command mode</td></tr>
+              <tr><td>Nh</td><td>same above</td></tr>
+              <tr><td>Nj</td><td>...</td></tr>
+              <tr><td>Nk</td><td>...</td></tr>
+              <tr><td>Nl</td><td>...</td></tr>
+              <tr><td>gg</td><td>...</td></tr>
+              <tr><td>g</td><td>...</td></tr>
+              <tr><td>w</td><td>...</td></tr>
+              <tr><td>b</td><td>...</td></tr>
+              <tr><td>d</td><td>...</td></tr>
+              <tr><td>s</td><td>...</td></tr>
+              <tr><td>b</td><td>...</td></tr>
+              <tr><td>x</td><td>...</td></tr>
+              <tr><td>y</td><td>...</td></tr>
+              <tr><td>na</td><td>Convert native chars to ascii chars.</td></tr>
+              <tr><td>an</td><td>Convert ascii chars to native chars </td></tr>
+
+              <tr><td class="modeHeader">Visual block mode</td><td class="modeHeaderDesc">vb command in command mode</td></tr>
+              <tr><td>h</td><td>same above</td></tr>
+              <tr><td>j</td><td>...</td></tr>
+              <tr><td>k</td><td>...</td></tr>
+              <tr><td>l</td><td>...</td></tr>
+              <tr><td>d</td><td>...</td></tr>
+              <tr><td>y</td><td>copy selected texts to viex Rectangle clipboard</td></tr>
+
+              <tr><td class="modeHeader">MISC mode</td><td class="modeHeaderDesc">t command in command mode</td></tr>
+              <tr><td>t</td><td>display editor navigator list popup</td></tr>
+              <tr><td>b</td><td>display bookmark navigator list popup</td></tr>
+              <tr><td>N</td><td>jump to N item</td></tr>
+              <tr><td>q</td><td>close popup</td></tr>
+              <tr><td>k</td><td>up in list popup</td></tr>
+              <tr><td>j</td><td>down in list popup</td></tr>
+
+              <tr><td class="modeHeader">colon commands</td><td class="modeHeaderDesc"></td></tr>
+              <tr><td>:w</td><td></td></tr>
+              <tr><td>:q!</td><td></td></tr>
+              <tr><td>:wq</td><td></td></tr>
+
+              <tr><td class="modeHeader">shortcut commands</td><td class="modeHeaderDesc"></td></tr>
+              <tr><td>CTRL+Y</td><td>redo, netbeans action</td></tr>
+              <tr><td>CTRL+U</td><td>page up </td></tr>
+              <tr><td>CTRL+Y</td><td>page down</td></tr>
+
+          </table>
+      </div>
+      <div>
+          N&nbsp;&nbsp;&nbsp; a number entered before the command
+      </div>
+  </body>
+</html>

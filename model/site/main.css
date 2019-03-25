@@ -1,0 +1,53 @@
+body {
+	background-color: silver; width: 760px; height: 600px; margin: auto; font-size: 14pt; color: #666600;}
+a:link {
+	text-decoration: underline; color: gray; }
+a:hover {
+	text-decoration: underline; color: blue; }
+#big-head {
+	float: left; clear: both; }
+#big-head h1 {
+	}
+#main-info {
+	float: left; clear: both; }
+#nav {
+	float: left; clear: left; margin-left: 5px; margin-top: 30px; width: 250px; height: 400px; border: 1px solid #999999; }
+#nav ul {
+	list-style-type: none; padding-right: 5px; }
+#nav ul li {
+	color: gray; font-size: 16pt; }
+#info {
+	float: left; margin-left: 20px; margin-top: 30px; width: 450px; height: 450px; border: 1px solid #999999; color: #666600; }
+#content {
+	clear: both; float: left; margin-left: 20px; margin-top: 30px; width: 450px; }
+#content .func {
+   float: left; color: #666600; }
+#demo {
+   clear: both; float: left; margin-top: 30px; }
+ #foot {
+   float: left; clear: both; }
+.indent {
+    text-indent: 2em;
+}
+
+.cmdh {
+    clear: both;
+}
+.mode {
+
+}
+.mode ul {
+    list-style: none;
+}
+.item {
+
+}
+.aimg {
+    margin-left: 20px;
+    margin-bottom: 20px;
+    clear: both;
+}
+.desc {
+}
+.desc cdesc {
+}

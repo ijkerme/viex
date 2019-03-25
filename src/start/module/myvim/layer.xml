@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.1//EN" "http://www.netbeans.org/dtds/filesystem-1_1.dtd">
+<filesystem>
+    <folder name="Actions"/>
+    <folder name="Menu">
+        <folder name="View">
+            <attr name="org-netbeans-modules-editor-MainMenuAction$ShowToolBarAction.instance/start-module-myvim-evieditor-separatorBefore.instance" boolvalue="true"/>
+            <file name="start-module-myvim-separatorBefore.instance">
+                <attr name="instanceClass" stringvalue="javax.swing.JSeparator"/>
+            </file>
+            <attr name="start-module-myvim-separatorBefore.instance/start-module-myvim-EVIEditor.shadow" boolvalue="true"/>
+        </folder>
+    </folder>
+    <folder name="OptionsDialog">
+        <file name="start-module-myvim-options-VIEXOptionsCategory.instance"/>
+    </folder>
+</filesystem>

@@ -1,0 +1,81 @@
+3.1      Fxied bugs
+          works with netbeans 7.1.1
+2.2.3   Fixed bugs
+        Works with nebeans 6.9        
+	Added setCaretMagicPosition for BeginLineAction
+        Fixed bug for could't display the web.xml editor's name
+        Fixed bug for could't add viex to compoent when it opened
+2.2.2   Fixed bugs
+        Add commands "zc, za, zM, zR" in command mode
+        Add commands "na, an" in visual comde
+        Enhance 'new' command which create a file from a existed template
+        Info for execute a error command
+        Works with netbeans 6.7
+2.2.1   Fixed bugs
+2.1.5   Fixed bugs
+        Added commands cw, B, W for COMMAND MODE
+2.1.4   Port to netbeans 6.0
+        Switch to CommandMode after when executed action for quick list
+        removed unused import
+        Fixed bugs
+2.1.3   Added I command for COMMAND MODE
+2.1.2   Fixed bugs
+        Added :new command for COMMAND MODE
+        Added ~, gu, gU commands for VISUAL MODE
+        Added C, P, D, S, A, guu, gUU, g~~, gf, ga, g8, ~, >>, <<, commands for COMMAND mode
+2.1.1   Fixed netbeans UI deads when vi be attached, EditorCookie.getOpenedPanes executed in non-awt event thread
+        Added descriptions for project files list
+2.1.0   Added support for "u" undo command in command mode
+        Added MISC Mode, enter MISC mode for "t" command in command mode
+        Added support open Editor tabs list for "t" command in MISC mode
+        Added support open project files list for "p" command in MISC mode
+        #Added support open Bookmark list for "b" command in MISC mode
+        Added support digital command junmp to item in MISC mode
+        Added support slash search command in MISC mode
+        Added support CTRL+U page up 
+        Added support CTRL+D page down 
+        Added viex help
+        Added regular expression options for Quick Navagator List
+        Fixed bugs
+        
+2.0.2.2 Removed dependencies in viex option panel, layout options panels manual.
+2.0.2.1 Fixed IllegalArgumentException when not chars in line at executed EndLineAction, BeginLineAction
+        Fixed broken iterator in VIEXInitialSetting: addKeymapToAllPanes,removeKeymapFromAllPanes.
+2.0.2   Every editor has individual commands state for itself owner.
+        Added boolean deleted, valid fields for mp,d,y action get correct actions in visual block mode.
+2.0.1.2 fixed errors for visual block mode
+        set magic caret position when "^" and "$" action executed.
+        changed structures of some functions
+        alls editors become to insert mode when has settings changed.
+2.0.1.1 fixed a error for visual block mode
+2.0.1   fixed caret magic position when executed up,down,right,left action in command mode.
+	Added support for "vb" visual block mode
+	Added support for "mp" paste selected rectangle contents
+        Added support for "d" delete selected rectangle content in visual block mode.
+2.0     Reimplementation viex listener architecture, supported listens every one editor opend.
+        fixed many errors;
+1.0.1   Added support for "yy" yank command in command mode
+        Minor fiexed for something functions
+            Cursor jump to first non-white char after executed "p" action in command mode 
+            Delete all white chars for joined line after executed "J" action in command mode
+1.0     Added suuport for ":q" quit editor command in command mode
+        Added support for "mk" move line up command in command mode
+        Added support for "mj" move line down command in command mode
+        Added support for "ck" copy line up command in command mode
+        Added support for "cj" copy line down command in command mode
+        Added support for "ma" jump to next annotation in command mode
+        Changed "^" action for jump to row first non white
+        Changed "$" action for jump to row last non white
+        Corrected certain behaviors for some commands
+        Bugs fiexed
+0.12    Delete char at cursor while without text selected in command "s"
+        Added support digital followed command while in command and visual mode.
+        Many bugs fiexed.
+0.11    Added support copy line for "y" while in command mode
+0.1     initialization...
+
+viex has integrated 3-part utility tools.
+The tools from:
+    Sandip V. Chitale (Sandip.Chitale@Sun.Com) (LineTools, RegExpHighlighter)
+
+bugs to:yinnai@gmail.com

@@ -1,0 +1,133 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>VIEX hightlights features</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link type="text/css" href="main.css"  rel="stylesheet"/>
+  </head>
+  <body>
+    <div class="cmdh">
+        <p>There are five command modes in the viex:</p>
+    </div>
+    <div class="cmdb">
+        <div class="mode">
+            <p class="moddesc">
+                <h5>INSERT MODE</h5>
+                <img class="aimg" src="viexfeatures.files/image004.jpg" longdesc="INSERT MODE"></img>
+                <div class="desc">Press i enter in INSERT MODE whenever at
+                COMMAND MODE. It executes no command when it in INSERT MODE, and
+                 all of actions executed by netbeans.</div>
+            </p>
+        </div>
+        <div class="mode">
+            <p class="moddesc">
+                <h5>COMMAND MODE</h5>
+                <img class="aimg" src="viexfeatures.files/image006.jpg" longdesc="INSERT MODE"></img>
+                <div class="desc">Press ESC key to enter in  COMMAND MODE whenever at any a mode.</div>
+            </p>
+            <ul class="item">
+                <li class="cmd">h<span class="cdesc">&nbsp;&nbsp;Move cursor a line up</span></li>
+                <li class="cmd">j<span class="cdesc">&nbsp;&nbsp;Move cursor a line down</span></li>
+                <li class="cmd">h<span class="cdesc">&nbsp;&nbsp;Move cursor a char left</span></li>
+                <li class="cmd">l<span class="cdesc">&nbsp;&nbsp;Move cursor a char right</span></li>
+                <li class="cmd">cj<span class="cdesc">&nbsp;&nbsp;Copy a line down</span></li>
+                <li class="cmd">ck<span class="cdesc">&nbsp;&nbsp;Copy a line up</span></li>
+                <li class="cmd">mj<span class="cdesc">&nbsp;&nbsp;Move a line down</span></li>
+                <li class="cmd">mk<span class="cdesc">&nbsp;&nbsp;Move a line up</span></li>
+                <li class="cmd">new
+                    <span>&nbsp;&nbsp;Create a new file or open a existed file, or create a file from existed a file template.</span>
+                    <div>
+                        <img src="viexfeatures.files/image016.jpg" longdesc="New a file" />
+                        <p>
+                            Command "new ..\Test.i" creates a new file with a existed file template the preceding dir of at current dir.<br />
+                            Suffix "i" indicates to create a java interface. All of the codes map in the following are default in viex:<br />
+                            <ul>
+                                <li>c<span>&nbsp;&nbsp;indicates to create a java class</span></li>
+                                <li>e<span>&nbsp;&nbsp;indicates to create a java enum</span></li>
+                                <li>a<span>&nbsp;&nbsp;indicates to create a java annotation</span></li>
+                                <li>p<span>&nbsp;&nbsp;indicates to create a java empty class</span></li>
+                                <li>m<span>&nbsp;&nbsp;indicates to create a java class with a main method</span></li>
+                            </ul>
+                            You can also add various custom template name pair to viex by netbeans options:<br />
+                            <img src="viexfeatures.files/image018.jpg" longdesc="viex nb options" />
+                        </p>
+                    </div>
+                </li>
+                <li class="cmd">'<span class="cdesc">&nbsp;&nbsp;Surrounding a word under cursor with a pair of '.</span>
+                    <img src="viexfeatures.files/image020.jpg" />
+                </li>
+                <li class="cmd">"<span class="cdesc">&nbsp;&nbsp;Surrounding a word under cursor with a pair of ".</span>
+                    <img src="viexfeatures.files/image022.jpg" />
+                </li>
+                <li class="cmd">d'
+                    <span class="cdesc">&nbsp;&nbsp;Delete it if a char under cursor was found in chars pair map.</span>
+                    <img src="viexfeatures.files/image024.jpg" /><br />
+                    &nbsp;&nbsp;Execute d' in command mode will deletes a pair of "'":<br />
+                    &nbsp;&nbsp;<img src="viexfeatures.files/image026.jpg" />
+                </li>
+            </ul>
+        </div>
+        <div class="mode">
+            <p class="moddesc">
+                <h5>VISUAL MODE</h5>
+                <img class="aimg" src="viexfeatures.files/image028.jpg" longdesc="VISUAL MODE"></img>
+                <div class="desc">Press v to enter in VISUAL MODE when at command mode.</div>
+                <ul class="item">
+                    <li class="cmd">d<span class="cdesc">&nbsp;&nbsp;Delete a selected text area</span><br />
+                        <img src="viexfeatures.files/image030.jpg"/>
+                    </li>
+                    <li class="cmd">'(chars)<span class="cdesc">Surrounding a selected text area with the (chars). For example:</span>
+                        <img src="viexfeatures.files/image032.jpg" />
+                        Execute the command the above will surrounding the selected text area with a pair of ':<br />
+                        <img src="viexfeatures.files/image034.jpg" /><br />
+                        You can also add various custom chars pair to viex by netbeans options:<br />
+                        <img src="viexfeatures.files/image036.jpg" /><br />
+                        <img src="viexfeatures.files/image038.jpg" /><br />
+                        Select a text area and execute a command '&lt;div&gt;':<br />
+                        <img src="viexfeatures.files/image040.jpg" /><br />
+                        Surrounding the selected text area with a pair of "&lt;div&gt;" and "&lt;/div&gt;"
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <div class="mode">
+            <p class="moddesc">
+                <h5>VISUAL BLOCK MODE</h5>
+                <img class="aimg" src="viexfeatures.files/image042.jpg" longdesc="VISUAL BLOCK MODE"></img>
+                <div class="desc">Press b to enter in VISUAL BLOCK MODE when at visual mode</div>
+                <img class="aimg" src="viexfeatures.files/image044.jpg" /><br />
+                Rectange select a text area.<br />
+                <ul class="item">
+                    <li class="cmd">d<span class="cdesc">&nbsp;&nbsp;Delete a selected rectangle text area.</span><br />
+                        <img src="viexfeatures.files/image046.jpg" />
+                    </li>
+                    <li class="cmd">y<span class="cdesc">&nbsp;&nbsp;Copy a selected rectangle text area into the system clipboard.</span></li>
+                    <li class="cmd">mp<span class="cdesc">&nbsp;&nbsp;Paste copied a rectangle text area to the editor.</span><br />
+                        <img src="viexfeatures.files/image050.jpg" />
+                    </li>
+                </ul>
+            </p>
+        </div>
+        <div class="mode">
+            <p class="moddesc">
+                <h5>MISC MODE</h5>
+                <img class="aimg" src="viexfeatures.files/image052.jpg" longdesc="MISC MODE"/>
+                <ul class="item">
+                    <li class="cmd">t<span class="cdesc">&nbsp;&nbsp;Display a list which contains opened these editors
+                    except itself. Typing j to navigating next opened editor, or typing k to navigating previous opened editor.</span>
+                        <img src="viexfeatures.files/image054.jpg" />
+                    </li>
+                    <li class="cmd">p<span class="cdesc">Display all of the files of the project in a list.</span>
+                        <img src="viexfeatures.files/image056.jpg" /><br />
+                        Navigate keys are same to the t command, also position in a specify item by typing a digital or
+                        use '/&lt;chars&gt;' to searching the item start with the chars follow the '/':<br />
+                        <img src="viexfeatures.files/image058.jpg" /><br />
+                        You can also set a filter for the list by netbeans options:<br />
+                        <img src="viexfeatures.files/image060.jpg" />
+                    </li>
+                </ul>
+            </p>
+        </div>
+    </div>
+  </body>
+</html>
