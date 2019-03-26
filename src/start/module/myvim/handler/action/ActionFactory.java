@@ -200,6 +200,7 @@ public class ActionFactory {
         defaultActions.put(INSERT_BEGIN_LINE, new InsertBeginLineAction());
         defaultActions.put(INSERT_AFTER_CARET, new InsertAfterCaretAction());
         defaultActions.put(INSERT_BELOW_LINE, new InsertBelowLineAction());
+        defaultActions.put(INSERT_ABOVE_LINE, new InsertAboveLineAction());
         defaultActions.put(INSERT_END_LINE, new InsertEndLineAction());
 
         defaultActions.put(CHANGE_TO_END_LINE, new ChangeToEndLineAction());
@@ -352,7 +353,7 @@ public class ActionFactory {
         MOVE_LINE_UP, MOVE_LINE_DOWN, COPY_LINE_UP, COPY_LINE_DOWN, 
         COPY_LINE_TO_CLIPBOARD,
         MOVE_NEXT_ANNOTATION, SHIFT_LINE_LEFT, SHIFT_LINE_RIGHT,
-        INSERT_AT_CARET, INSERT_AFTER_CARET, INSERT_BELOW_LINE, INSERT_END_LINE, INSERT_BEGIN_LINE,
+        INSERT_AT_CARET, INSERT_AFTER_CARET, INSERT_BELOW_LINE, INSERT_ABOVE_LINE, INSERT_END_LINE, INSERT_BEGIN_LINE,
         CHANGE_TO_END_LINE, CHANGE_CURRENT_LINE, 
         SWITCH_CASE, SWITCH_UPPER_LINE, SWITCH_LOWER_LINE, SWITCH_CASE_LINE, SWITCH_UPPER, SWITCH_LOWER,
         DELETE_NEXT_CHAR, DELETE_PREV_CHAR, DELETE_LINE, DELETE_TO_END,

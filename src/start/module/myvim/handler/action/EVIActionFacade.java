@@ -1007,6 +1007,30 @@ public class EVIActionFacade {
         
     }
     
+    protected static class InsertAboveLineAction implements CommandAction {
+        
+        public void execute(ActionEvent e, String content) {
+            JTextComponent target = getTextComponent(e);
+            if (isTargetEditable(target)) {
+                int caret = target.getCaretPosition();
+                try {
+                    int position = getRowStart(target, caret);
+                    int ipos = position;
+                    if (position == 0) {
+                        ipos = 1;
+                    }
+                    target.setCaretPosition(ipos - 1);
+                    target.getDocument().insertString(position, "\n", null);
+                    target.setCaretPosition(position);
+                    removeEVIKeymap(target);
+                } catch (BadLocationException ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }
+        
+    }
+    
     protected static class InsertBelowLineAction implements CommandAction {
         
         public void execute(ActionEvent e, String content) {
@@ -1034,11 +1058,7 @@ public class EVIActionFacade {
                 try {
                     int end = getRowEnd(target, p);
                     Caret caret = target.getCaret();
-                    if (caret.isSelectionVisible()) {
-                        caret.setDot(caret.getDot());
-                    } else {
-                        caret.setDot(end);
-                    }
+                    caret.setDot(end);
                 } catch (BadLocationException ex) {
                     // ex.printStackTrace();
                 }

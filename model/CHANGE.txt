@@ -1,4 +1,6 @@
-4.0     update to netbeans 10
+4.1     fixed command A
+        Added O - Insert text at the beginning of newly created line over cursor.
+4.0     update to netbeans 10, working at nb >= 10.0, nb 9.0 no test
 3.1      Fxied bugs
           works with netbeans 7.1.1
 2.2.3   Fixed bugs
