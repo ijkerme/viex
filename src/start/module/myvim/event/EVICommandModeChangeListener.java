@@ -5,7 +5,6 @@ import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
-import org.netbeans.api.editor.EditorUtilities;
 import org.netbeans.editor.BaseKit;
 import org.netbeans.editor.EditorUI;
 import org.netbeans.editor.StatusBar;
@@ -28,7 +27,7 @@ import start.module.myvim.utilities.OverwriteCaret;
  * @author jker
  */
 public class EVICommandModeChangeListener implements CommandModeChangeListener {
-    
+    public static final String CARET_OVERWRITE_MODE_PROPERTY = "caret-overwrite-mode";
     private static Caret overCaret = new OverwriteCaret();
     
     public void modeChanged(CommandModeChangeEvent e) {
@@ -72,13 +71,13 @@ public class EVICommandModeChangeListener implements CommandModeChangeListener {
     private void switchCursor(JTextComponent editorUI, Mode mode) {
         //EditorUI editorUI = org.netbeans.editor.Utilities.getEditorUI(editor);
         if (editorUI != null) {
-            Boolean overwrite = (Boolean) editorUI.getClientProperty(EditorUtilities.CARET_OVERWRITE_MODE_PROPERTY);
+            Boolean overwrite = (Boolean) editorUI.getClientProperty(CARET_OVERWRITE_MODE_PROPERTY);
             if (mode == COMMAND_MODE) {
                 if (overwrite == null) {
-                    editorUI.putClientProperty(EditorUtilities.CARET_OVERWRITE_MODE_PROPERTY, true);
+                    editorUI.putClientProperty(CARET_OVERWRITE_MODE_PROPERTY, true);
                     //changeTypingModeText(editorUI, EVIConstant.NONE);
                 } else if (!overwrite) {
-                    editorUI.putClientProperty(EditorUtilities.CARET_OVERWRITE_MODE_PROPERTY, true);
+                    editorUI.putClientProperty(CARET_OVERWRITE_MODE_PROPERTY, true);
                     //changeTypingModeText(editorUI, EVIConstant.NONE);
                 }
                 //changeTypingModeText(editorUI, EVIConstant.NONE);
@@ -88,7 +87,7 @@ public class EVICommandModeChangeListener implements CommandModeChangeListener {
                     changeTypingModeText(editorUI, getText(StatusBar.INSERT_LOCALE));
                 } else */
                 if (overwrite != null && overwrite) {
-                    editorUI.putClientProperty(EditorUtilities.CARET_OVERWRITE_MODE_PROPERTY, false);
+                    editorUI.putClientProperty(CARET_OVERWRITE_MODE_PROPERTY, false);
                     //changeTypingModeText(editorUI, getText(StatusBar.INSERT_LOCALE));
                 }
             }
