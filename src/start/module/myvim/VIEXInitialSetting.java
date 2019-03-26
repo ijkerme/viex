@@ -9,7 +9,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
-import org.openide.awt.StatusLineElementProvider;
 import org.openide.cookies.EditorCookie;
 import org.openide.nodes.Node;
 import org.openide.util.Lookup;
@@ -19,13 +18,14 @@ import org.openide.util.Utilities;
 import org.openide.windows.TopComponent;
 import start.module.myvim.handler.CommandMode;
 import start.module.myvim.handler.action.ActionFactory;
+import start.module.myvim.sp.StatusLineElementProviderImpl;
+import start.module.myvim.sp.StatusLineMgr;
 import start.module.myvim.utilities.VIEXPairTable;
 import static start.module.myvim.utilities.ComponentUtils.*;
-import static start.module.myvim.utilities.VIEXOptions.*;
 
 /**
  *
- * @author jker
+ * @author xiaomj
  */
 public class VIEXInitialSetting implements LookupListener {
     
@@ -160,11 +160,13 @@ public class VIEXInitialSetting implements LookupListener {
     }
 
     private void changeStatusBar() {
-        StatusLineElementProvider status = Lookup.getDefault().lookup(StatusLineElementProvider.class);
-        Component label = status.getStatusLineElement();
-        if (label != null) {
-            ((JLabel)label).setText("-VIEX-");
-            label.setVisible(!label.isVisible());
+        StatusLineElementProviderImpl status = StatusLineMgr.getStatusLine();
+        if (status != null) {
+            Component label = status.getStatusLineElement();
+            if (label != null) {
+                ((JLabel)label).setText("-VIEX-");
+                label.setVisible(!label.isVisible());
+            }
         }
     }
 

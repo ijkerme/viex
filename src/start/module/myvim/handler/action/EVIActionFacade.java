@@ -53,6 +53,7 @@ import start.module.myvim.state.Mode;
 import start.module.myvim.state.QuickListType;
 import start.module.myvim.utilities.CommandUtils;
 import static javax.swing.text.Utilities.*;
+import org.netbeans.api.editor.document.LineDocumentUtils;
 import static start.module.myvim.state.CommandModeState.*;
 import static start.module.myvim.utilities.ComponentUtils.*;
 import static start.module.myvim.state.VIEXRepository.*;
@@ -82,7 +83,7 @@ public class EVIActionFacade {
                 int caret = target.getCaretPosition();
                 try {
                     //int start = getRowStart(target, caret);
-                    int start = org.netbeans.editor.Utilities.getRowFirstNonWhite((BaseDocument)target.getDocument(), caret);
+                    int start = LineDocumentUtils.getLineFirstNonWhitespace((BaseDocument)target.getDocument(), caret);
                     if (start == -1 || caret == start) {
                         beep();
                         return ;
@@ -109,12 +110,13 @@ public class EVIActionFacade {
                 int caret = target.getCaretPosition();
                 try {
                     //int end = getRowEnd(target, caret);
-                    int end = org.netbeans.editor.Utilities.getRowLastNonWhite((BaseDocument)target.getDocument(), caret);
+                    int end = LineDocumentUtils.getLineLastNonWhitespace((BaseDocument)target.getDocument(), caret);
                     //if (caret != end) {
                     if (caret == end || end == -1) {
                         beep();
                         return ;
                     } else {
+                        end = end + 1; // fixed cusor not at end
                         if (isVisualMode(target)) {
                             target.moveCaretPosition(end);
                         } else {
@@ -137,9 +139,11 @@ public class EVIActionFacade {
             if (isTargetEnabled(target)) {
                 int p = target.getCaretPosition();
                 try {
-                    int sp = getRowStart(target, p);
-                    target.setCaretPosition(sp);
-                    setCaretMagicPosition(target, sp);
+                    int sp = LineDocumentUtils.getLineFirstNonWhitespace(getDocument(target), p);
+                    if (sp != -1) {
+                        target.setCaretPosition(sp);
+                        setCaretMagicPosition(target, sp);
+                    }
                 } catch (BadLocationException ex) {
                     //ex.printStackTrace();
                 }
@@ -269,17 +273,17 @@ public class EVIActionFacade {
                 }*/
             int dot = caret.getDot();
             try {
-                if (null != content && 0 <content.length()) {
-                    Document doc = textComp.getDocument();
+                Document doc = getDocument(textComp);
+                if (null != content && 0 <content.length() && doc != null) {                   
                     if (doc instanceof BaseDocument) {
                         BaseDocument baseDoc = (BaseDocument)doc;
-                        int lines = org.netbeans.editor.Utilities.getLineOffset(baseDoc, caret.getDot()) + 1;
-                        int rc = org.netbeans.editor.Utilities.getRowCount(baseDoc);
+                        int lines = LineDocumentUtils.getLineIndex(baseDoc, caret.getDot()) + 1;
+                        int rc = LineDocumentUtils.getLineCount(baseDoc);
                         int offLine = Integer.parseInt(content);
                         if (( lines - offLine) <= 0) {
-                            dot = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, 0);
+                            dot = LineDocumentUtils.getLineStartFromIndex(baseDoc, 0);
                         } else {
-                            dot = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, lines - offLine - 1);
+                            dot = LineDocumentUtils.getLineStartFromIndex(baseDoc, lines - offLine - 1);
                         }
                         Point p = caret.getMagicCaretPosition();
                         if (p == null) {
@@ -309,7 +313,8 @@ public class EVIActionFacade {
                             return; // model to view failed
                         }
                     }
-                    dot = org.netbeans.editor.Utilities.getPositionAbove(textComp, dot, p.x);
+                    int tmp = org.netbeans.editor.Utilities.getPositionAbove(textComp, dot, p.x);
+                    dot = tmp;
                 }
             } catch (BadLocationException ex) {
                 //ex.printStackTrace();
@@ -333,10 +338,6 @@ public class EVIActionFacade {
         public void execute(ActionEvent e, String content) {
             JTextComponent target = getTextComponent(e);
             if (isTargetEnabled(target)) {
-                /*if (isMiscMode(target) && VIEXPopup.getPopup().isVisible()) {
-                    VIEXPopup.getPopup().getContentComponent().down();
-                    return ;
-                } */
                 moveDown(target, content);
             }
         }
@@ -345,35 +346,17 @@ public class EVIActionFacade {
             Caret caret = textComp.getCaret();
             int dot = caret.getDot();
             try {
-/*                int x = textComp.modelToView(c.getDot()).x;
                 if (null != content && 0 < content.length()) {
                     Document doc = textComp.getDocument();
                     if (doc instanceof BaseDocument) {
                         BaseDocument baseDoc = (BaseDocument)doc;
-                        int lines = org.netbeans.editor.Utilities.getLineOffset(baseDoc, c.getDot()) + 1;
-                        int rc = org.netbeans.editor.Utilities.getRowCount(baseDoc);
+                        int lines = LineDocumentUtils.getLineIndex(baseDoc, caret.getDot()) + 1;
+                        int rc = LineDocumentUtils.getLineCount(baseDoc);
                         int offLine = Integer.parseInt(content);
                         if ((lines + offLine) > (rc + 1)) {
-                            position = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, rc - 1);
+                            dot = LineDocumentUtils.getLineStartFromIndex(baseDoc, rc - 1);
                         } else {
-                            position = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, lines + offLine - 1);
-                        }
-                    }
-                } else {
-                    //position = getPositionBelow(textComp,c.getDot(), x);
-                    position = org.netbeans.editor.Utilities.getPositionBelow(textComp, c.getDot(), x);
-                }*/
-                if (null != content && 0 < content.length()) {
-                    Document doc = textComp.getDocument();
-                    if (doc instanceof BaseDocument) {
-                        BaseDocument baseDoc = (BaseDocument)doc;
-                        int lines = org.netbeans.editor.Utilities.getLineOffset(baseDoc, caret.getDot()) + 1;
-                        int rc = org.netbeans.editor.Utilities.getRowCount(baseDoc);
-                        int offLine = Integer.parseInt(content);
-                        if ((lines + offLine) > (rc + 1)) {
-                            dot = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, rc - 1);
-                        } else {
-                            dot = org.netbeans.editor.Utilities.getRowStartFromLineOffset(baseDoc, lines + offLine - 1);
+                            dot = LineDocumentUtils.getLineStartFromIndex(baseDoc, lines + offLine - 1);
                         }
                         Point p = caret.getMagicCaretPosition();
                         if (p == null) {
@@ -473,7 +456,7 @@ public class EVIActionFacade {
             if (isTargetEnabled(target)) {
                 int caret = target.getCaretPosition();
                 try {
-                    int position = org.netbeans.editor.Utilities.getNextWord(target, caret);
+                    int position = LineDocumentUtils.getNextWordStart(getDocument(target), caret);
                     if (isVisualMode(target)) {
                         target.moveCaretPosition(position);
                     } else {
@@ -495,7 +478,7 @@ public class EVIActionFacade {
             if (isTargetEnabled(target)) {
                 int caret = target.getCaretPosition();
                 try {
-                    int position = org.netbeans.editor.Utilities.getPreviousWord(target, caret);
+                    int position = LineDocumentUtils.getPreviousWordStart(getDocument(target), caret);
                     if (isVisualMode(target)) {
                         target.moveCaretPosition(position);
                     } else {
@@ -569,86 +552,75 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 Document doc = target.getDocument();
                 if (doc instanceof BaseDocument) {
-                    ((BaseDocument)doc).atomicLock();
-                }
-                try {
-                    Element rootElement = doc.getDefaultRootElement();
-                    
-                    Caret caret = target.getCaret();
-                    boolean selection = false;
-                    boolean backwardSelection = false;
-                    int start = target.getCaretPosition();
-                    int end = start;
-                    
-                    // check if there is a selection
-                    if (caret.isSelectionVisible()) {
-                        int selStart = caret.getDot();
-                        int selEnd = caret.getMark();
-                        start = Math.min(selStart, selEnd);
-                        end =   Math.max(selStart, selEnd) - 1;
-                        selection = true;
-                        backwardSelection = (selStart >= selEnd);
-                    }
-                    
-                    int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
-                    int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
-                    
-                    if (zeroBaseStartLineNumber == -1) {
-                        // could not get line number
-                        beep();
-                        return;
-                    } else if (zeroBaseStartLineNumber == 0) {
-                        // already first line
-                        return;
-                    } else {
-                        try {
-                            //see if it be start with digital
-                            /*int lc = 1;
-                            if (null != content && 0 < content.length()) {
-                                lc = Integer.parseInt(content);
-                            }*/
-                            // get line text
-                            Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
-                            int startLineStartOffset = startLineElement.getStartOffset();
-                            
-                            Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
-                            int endLineEndOffset = endLineElement.getEndOffset();
-                            
-                            String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
-                            
-                            //if command start with digital then move up lc lines
-                            Element previousLineElement = rootElement.getElement(zeroBaseStartLineNumber - 1);
-                            int previousLineStartOffset = previousLineElement.getStartOffset();
-                            
-                            int column = start - startLineStartOffset;
-                            
-                            // remove the line
-                            doc.remove(startLineStartOffset, Math.min(doc.getLength(),endLineEndOffset) - startLineStartOffset);
-                            
-                            // insert the text before the previous line
-                            doc.insertString(previousLineStartOffset, linesText, null);
-                            
-                            if (selection) {
-                                // select moved lines
-                                if (backwardSelection) {
-                                    caret.setDot(previousLineStartOffset + column);
-                                    caret.moveDot(previousLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                } else {
-                                    caret.setDot(previousLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                    caret.moveDot(previousLineStartOffset + column);
-                                }
-                            } else {
-                                // set caret position
-                                target.setCaretPosition(previousLineStartOffset + column);
+                    ((BaseDocument)doc).runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            Element rootElement = doc.getDefaultRootElement();
+                            Caret caret = target.getCaret();
+                            boolean selection = false;
+                            boolean backwardSelection = false;
+                            int start = target.getCaretPosition();
+                            int end = start;
+
+                            // check if there is a selection
+                            if (caret.isSelectionVisible()) {
+                                int selStart = caret.getDot();
+                                int selEnd = caret.getMark();
+                                start = Math.min(selStart, selEnd);
+                                end =   Math.max(selStart, selEnd) - 1;
+                                selection = true;
+                                backwardSelection = (selStart >= selEnd);
                             }
-                        } catch (BadLocationException ex) {
-                            ErrorManager.getDefault().notify(ex);
+
+                            int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
+                            int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
+
+                            if (zeroBaseStartLineNumber == -1) {
+                                // could not get line number
+                                beep();
+                            } else if (zeroBaseStartLineNumber == 0) {
+                                // already first line
+                            } else {
+                                try {
+                                    Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
+                                    int startLineStartOffset = startLineElement.getStartOffset();
+
+                                    Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
+                                    int endLineEndOffset = endLineElement.getEndOffset();
+
+                                    String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
+
+                                    //if command start with digital then move up lc lines
+                                    Element previousLineElement = rootElement.getElement(zeroBaseStartLineNumber - 1);
+                                    int previousLineStartOffset = previousLineElement.getStartOffset();
+
+                                    int column = start - startLineStartOffset;
+
+                                    // remove the line
+                                    doc.remove(startLineStartOffset, Math.min(doc.getLength(),endLineEndOffset) - startLineStartOffset);
+
+                                    // insert the text before the previous line
+                                    doc.insertString(previousLineStartOffset, linesText, null);
+
+                                    if (selection) {
+                                        // select moved lines
+                                        if (backwardSelection) {
+                                            caret.setDot(previousLineStartOffset + column);
+                                            caret.moveDot(previousLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                        } else {
+                                            caret.setDot(previousLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                            caret.moveDot(previousLineStartOffset + column);
+                                        }
+                                    } else {
+                                        // set caret position
+                                        target.setCaretPosition(previousLineStartOffset + column);
+                                    }
+                                } catch (BadLocationException ex) {
+                                    ErrorManager.getDefault().notify(ex);
+                                }
+                            }                        
                         }
-                    }
-                } finally {
-                    if (doc instanceof BaseDocument) {
-                        ((BaseDocument)doc).atomicUnlock();
-                    }
+                    });
                 }
             } else {
                 beep();
@@ -663,81 +635,79 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 Document doc = target.getDocument();
                 if (doc instanceof BaseDocument) {
-                    ((BaseDocument)doc).atomicLock();
-                }
-                try {
-                    Element rootElement = doc.getDefaultRootElement();
-                    
-                    Caret caret = target.getCaret();
-                    boolean selection = false;
-                    boolean backwardSelection = false;
-                    int start = target.getCaretPosition();
-                    int end = start;
-                    
-                    // check if there is a selection
-                    if (caret.isSelectionVisible()) {
-                        int selStart = caret.getDot();
-                        int selEnd = caret.getMark();
-                        start = Math.min(selStart, selEnd);
-                        end =   Math.max(selStart, selEnd) - 1;
-                        selection = true;
-                        backwardSelection = (selStart >= selEnd);
-                    }
-                    
-                    int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
-                    int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
-                    
-                    if (zeroBaseEndLineNumber == -1) {
-                        // could not get line number
-                        beep();
-                        return;
-                    } else if (zeroBaseEndLineNumber >= (rootElement.getElementCount() - 2)) {
-                        // already last or penultimate line (due to a getLength() bug)
-                        return;
-                    } else {
-                        try {
-                            // get line text
-                            Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
-                            int startLineStartOffset = startLineElement.getStartOffset();
-                            
-                            Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
-                            int endLineEndOffset = endLineElement.getEndOffset();
-                            
-                            String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
-                            
-                            Element nextLineElement = rootElement.getElement(zeroBaseEndLineNumber + 1);
-                            int nextLineStartOffset = nextLineElement.getStartOffset();
-                            int nextLineEndOffset = nextLineElement.getEndOffset();
-                            
-                            int column = start - startLineStartOffset;
-                            
-                            // insert it after next line
-                            doc.insertString(nextLineEndOffset, linesText, null);
-                            
-                            // remove original line
-                            doc.remove(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
-                            
-                            if (selection) {
-                                // select moved lines
-                                if (backwardSelection) {
-                                    caret.setDot(nextLineEndOffset  - (endLineEndOffset - startLineStartOffset) + column);
-                                    caret.moveDot(nextLineEndOffset - (endLineEndOffset - end - 1));
-                                } else {
-                                    caret.setDot(nextLineEndOffset - (endLineEndOffset - end - 1));
-                                    caret.moveDot(nextLineEndOffset  - (endLineEndOffset - startLineStartOffset) + column);
-                                }
-                            } else {
-                                // set caret position
-                                target.setCaretPosition(Math.min(doc.getLength() - 1, nextLineEndOffset + column - (endLineEndOffset - startLineStartOffset)));
+                    ((BaseDocument)doc).runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            Element rootElement = doc.getDefaultRootElement();
+
+                            Caret caret = target.getCaret();
+                            boolean selection = false;
+                            boolean backwardSelection = false;
+                            int start = target.getCaretPosition();
+                            int end = start;
+
+                            // check if there is a selection
+                            if (caret.isSelectionVisible()) {
+                                int selStart = caret.getDot();
+                                int selEnd = caret.getMark();
+                                start = Math.min(selStart, selEnd);
+                                end =   Math.max(selStart, selEnd) - 1;
+                                selection = true;
+                                backwardSelection = (selStart >= selEnd);
                             }
-                        } catch (BadLocationException ex) {
-                            ErrorManager.getDefault().notify(ex);
+
+                            int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
+                            int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
+
+                            if (zeroBaseEndLineNumber == -1) {
+                                // could not get line number
+                                beep();
+                                return;
+                            } else if (zeroBaseEndLineNumber >= (rootElement.getElementCount() - 2)) {
+                                // already last or penultimate line (due to a getLength() bug)
+                                return;
+                            } else {
+                                try {
+                                    // get line text
+                                    Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
+                                    int startLineStartOffset = startLineElement.getStartOffset();
+
+                                    Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
+                                    int endLineEndOffset = endLineElement.getEndOffset();
+
+                                    String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
+
+                                    Element nextLineElement = rootElement.getElement(zeroBaseEndLineNumber + 1);
+                                    int nextLineStartOffset = nextLineElement.getStartOffset();
+                                    int nextLineEndOffset = nextLineElement.getEndOffset();
+
+                                    int column = start - startLineStartOffset;
+
+                                    // insert it after next line
+                                    doc.insertString(nextLineEndOffset, linesText, null);
+
+                                    // remove original line
+                                    doc.remove(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
+
+                                    if (selection) {
+                                        // select moved lines
+                                        if (backwardSelection) {
+                                            caret.setDot(nextLineEndOffset  - (endLineEndOffset - startLineStartOffset) + column);
+                                            caret.moveDot(nextLineEndOffset - (endLineEndOffset - end - 1));
+                                        } else {
+                                            caret.setDot(nextLineEndOffset - (endLineEndOffset - end - 1));
+                                            caret.moveDot(nextLineEndOffset  - (endLineEndOffset - startLineStartOffset) + column);
+                                        }
+                                    } else {
+                                        // set caret position
+                                        target.setCaretPosition(Math.min(doc.getLength() - 1, nextLineEndOffset + column - (endLineEndOffset - startLineStartOffset)));
+                                    }
+                                } catch (BadLocationException ex) {
+                                    ErrorManager.getDefault().notify(ex);
+                                }
+                            }                           
                         }
-                    }
-                } finally {
-                    if (doc instanceof BaseDocument) {
-                        ((BaseDocument)doc).atomicUnlock();
-                    }
+                    });
                 }
             } else {
                 beep();
@@ -752,71 +722,70 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 Document doc = target.getDocument();
                 if (doc instanceof BaseDocument) {
-                    ((BaseDocument)doc).atomicLock();
-                }
-                try {
-                    Element rootElement = doc.getDefaultRootElement();
-                    
-                    Caret caret = target.getCaret();
-                    boolean selection = false;
-                    boolean backwardSelection = false;
-                    int start = target.getCaretPosition();
-                    int end = start;
-                    
-                    // check if there is a selection
-                    if (caret.isSelectionVisible()) {
-                        int selStart = caret.getDot();
-                        int selEnd = caret.getMark();
-                        start = Math.min(selStart, selEnd);
-                        end =   Math.max(selStart, selEnd) - 1;
-                        selection = true;
-                        backwardSelection = (selStart >= selEnd);
-                    }
-                    
-                    int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
-                    int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
-                    
-                    if (zeroBaseStartLineNumber == -1) {
-                        // could not get line number
-                        beep();
-                        return;
-                    } else {
-                        try {
-                            // get line text
-                            Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
-                            int startLineStartOffset = startLineElement.getStartOffset();
-                            
-                            Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
-                            int endLineEndOffset = endLineElement.getEndOffset();
-                            
-                            String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
-                            
-                            int column = start - startLineStartOffset;
-                            
-                            // insert it
-                            doc.insertString(startLineStartOffset, linesText, null);
-                            
-                            if (selection) {
-                                // select moved lines
-                                if (backwardSelection) {
-                                    caret.setDot(startLineStartOffset + column);
-                                    caret.moveDot(startLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                } else {
-                                    caret.setDot(startLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                    caret.moveDot(startLineStartOffset + column);
-                                }
-                            } else {
-                                // set caret position
-                                target.setCaretPosition(startLineStartOffset + column);
+                    ((BaseDocument)doc).runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            Element rootElement = doc.getDefaultRootElement();
+
+                            Caret caret = target.getCaret();
+                            boolean selection = false;
+                            boolean backwardSelection = false;
+                            int start = target.getCaretPosition();
+                            int end = start;
+
+                            // check if there is a selection
+                            if (caret.isSelectionVisible()) {
+                                int selStart = caret.getDot();
+                                int selEnd = caret.getMark();
+                                start = Math.min(selStart, selEnd);
+                                end =   Math.max(selStart, selEnd) - 1;
+                                selection = true;
+                                backwardSelection = (selStart >= selEnd);
                             }
-                        } catch (BadLocationException ex) {
-                            ErrorManager.getDefault().notify(ex);
+
+                            int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
+                            int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
+
+                            if (zeroBaseStartLineNumber == -1) {
+                                // could not get line number
+                                beep();
+                                return;
+                            } else {
+                                try {
+                                    // get line text
+                                    Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
+                                    int startLineStartOffset = startLineElement.getStartOffset();
+
+                                    Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
+                                    int endLineEndOffset = endLineElement.getEndOffset();
+
+                                    String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
+
+                                    int column = start - startLineStartOffset;
+
+                                    // insert it
+                                    doc.insertString(startLineStartOffset, linesText, null);
+
+                                    if (selection) {
+                                        // select moved lines
+                                        if (backwardSelection) {
+                                            caret.setDot(startLineStartOffset + column);
+                                            caret.moveDot(startLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                        } else {
+                                            caret.setDot(startLineStartOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                            caret.moveDot(startLineStartOffset + column);
+                                        }
+                                    } else {
+                                        // set caret position
+                                        target.setCaretPosition(startLineStartOffset + column);
+                                    }
+                                } catch (BadLocationException ex) {
+                                    ErrorManager.getDefault().notify(ex);
+                                }
+                            }
+                       
                         }
-                    }
-                } finally {
-                    if (doc instanceof BaseDocument) {
-                        ((BaseDocument)doc).atomicUnlock();
-                    }
+                    });
                 }
             } else {
                 beep();
@@ -831,73 +800,71 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 Document doc = target.getDocument();
                 if (doc instanceof BaseDocument) {
-                    ((BaseDocument)doc).atomicLock();
-                }
-                try {
-                    Element rootElement = doc.getDefaultRootElement();
-                    
-                    
-                    Caret caret = target.getCaret();
-                    boolean selection = false;
-                    boolean backwardSelection = false;
-                    int start = target.getCaretPosition();
-                    int end = start;
-                    
-                    // check if there is a selection
-                    if (caret.isSelectionVisible()) {
-                        int selStart = caret.getDot();
-                        int selEnd = caret.getMark();
-                        start = Math.min(selStart, selEnd);
-                        end =   Math.max(selStart, selEnd) - 1;
-                        selection = true;
-                        backwardSelection = (selStart >= selEnd);
-                    }
-                    
-                    int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
-                    int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
-                    
-                    if (zeroBaseEndLineNumber == -1) {
-                        // could not get line number
-                        beep();
-                        return;
-                    } else {
-                        try {
-                            // get line text
-                            Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
-                            int startLineStartOffset = startLineElement.getStartOffset();
-                            
-                            Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
-                            int endLineEndOffset = endLineElement.getEndOffset();
-                            
-                            String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
-                            
-                            int column = start - startLineStartOffset;
-                            
-                            // insert it after next line
-                            doc.insertString(endLineEndOffset, linesText, null);
-                            
-                            if (selection) {
-                                // select moved lines
-                                if (backwardSelection) {
-                                    caret.setDot(endLineEndOffset + column);
-                                    caret.moveDot(endLineEndOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                } else {
-                                    caret.setDot(endLineEndOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
-                                    caret.moveDot(endLineEndOffset + column);
-                                }
-                            } else {
-                                // set caret position
-                                target.setCaretPosition(Math.min(doc.getLength() - 1, endLineEndOffset + column));
+                    ((BaseDocument)doc).runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            Element rootElement = doc.getDefaultRootElement();
+                            Caret caret = target.getCaret();
+                            boolean selection = false;
+                            boolean backwardSelection = false;
+                            int start = target.getCaretPosition();
+                            int end = start;
+
+                            // check if there is a selection
+                            if (caret.isSelectionVisible()) {
+                                int selStart = caret.getDot();
+                                int selEnd = caret.getMark();
+                                start = Math.min(selStart, selEnd);
+                                end =   Math.max(selStart, selEnd) - 1;
+                                selection = true;
+                                backwardSelection = (selStart >= selEnd);
                             }
-                        } catch (BadLocationException ex) {
-                            ErrorManager.getDefault().notify(ex);
+
+                            int zeroBaseStartLineNumber = rootElement.getElementIndex(start);
+                            int zeroBaseEndLineNumber = rootElement.getElementIndex(end);
+
+                            if (zeroBaseEndLineNumber == -1) {
+                                // could not get line number
+                                beep();
+                                return;
+                            } else {
+                                try {
+                                    // get line text
+                                    Element startLineElement = rootElement.getElement(zeroBaseStartLineNumber);
+                                    int startLineStartOffset = startLineElement.getStartOffset();
+
+                                    Element endLineElement = rootElement.getElement(zeroBaseEndLineNumber);
+                                    int endLineEndOffset = endLineElement.getEndOffset();
+
+                                    String linesText = doc.getText(startLineStartOffset, (endLineEndOffset - startLineStartOffset));
+
+                                    int column = start - startLineStartOffset;
+
+                                    // insert it after next line
+                                    doc.insertString(endLineEndOffset, linesText, null);
+
+                                    if (selection) {
+                                        // select moved lines
+                                        if (backwardSelection) {
+                                            caret.setDot(endLineEndOffset + column);
+                                            caret.moveDot(endLineEndOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                        } else {
+                                            caret.setDot(endLineEndOffset + (endLineEndOffset - startLineStartOffset) - (endLineEndOffset - end - 1));
+                                            caret.moveDot(endLineEndOffset + column);
+                                        }
+                                    } else {
+                                        // set caret position
+                                        target.setCaretPosition(Math.min(doc.getLength() - 1, endLineEndOffset + column));
+                                    }
+                                } catch (BadLocationException ex) {
+                                    ErrorManager.getDefault().notify(ex);
+                                }
+                            }
+                          
                         }
-                    }
-                } finally {
-                    if (doc instanceof BaseDocument) {
-                        ((BaseDocument)doc).atomicUnlock();
-                    }
+                    });
                 }
+
             } else {
                 beep();
             }
@@ -931,10 +898,10 @@ public class EVIActionFacade {
             JTextComponent target = getTextComponent(e);
             if (isTargetEnabled(target)) {
                 try {
-                    int lastLine = org.netbeans.editor.Utilities.getLineOffset(org.netbeans.editor.Utilities.getDocument(target), target.getCaret().getDot()) + 1;
+                    int lastLine = LineDocumentUtils.getLineIndex(getDocument(target), target.getCaret().getDot()) + 1;
                     BaseDocument doc = org.netbeans.editor.Utilities.getDocument(target);
                     Annotations  ann = doc.getAnnotations();
-                    int lines = org.netbeans.editor.Utilities.getRowCount(doc);
+                    int lines = LineDocumentUtils.getLineCount(doc);
                     //repeat find annotation
                     int rline = lines;
                     for (int i = lastLine; i < rline; i++) {
@@ -1095,21 +1062,23 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 int p = target.getCaretPosition();
                 try {
-                    int begin = getRowStart(target, p);
-                    int end = getRowEnd(target, p);
+                    final int begin = getRowStart(target, p);
+                    final int end = getRowEnd(target, p);
                     Document doc = target.getDocument();
                     if (doc instanceof BaseDocument) {
-                        BaseDocument doc2 = (BaseDocument)doc;
-                        try {
-                            doc2.atomicLock();
-                            doc2.remove(begin, end - begin);
-                        } finally {
-                            doc2.atomicUnlock();
-                        }
+                        final BaseDocument doc2 = (BaseDocument)doc;
+                        doc2.runAtomic(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    doc2.remove(begin, end - begin);    
+                                } catch (BadLocationException e) {
+                                }
+                            }
+                        });
                     }
                 } catch (BadLocationException ex) {
-                    //ex.printStackTrace();
-                }
+                }                    
                 removeEVIKeymap(target);
             }
         }
@@ -1125,12 +1094,15 @@ public class EVIActionFacade {
                     Document doc = target.getDocument();
                     if (doc instanceof BaseDocument) {
                         BaseDocument doc2 = (BaseDocument)doc;
-                        try {
-                            doc2.atomicLock();
-                            doc2.remove(p, end - p);
-                        } finally {
-                            doc2.atomicUnlock();
-                        }
+                        doc2.runAtomic(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    doc2.remove(p, end - p);
+                                } catch (BadLocationException e) {
+                                }
+                            }
+                        });
                     }
                 } catch (BadLocationException ex) {
                     //ex.printStackTrace();
@@ -1393,34 +1365,31 @@ public class EVIActionFacade {
     protected static class DeleteNextWordAction implements CommandAction {
         
         public void execute(ActionEvent e, String content) {
-            JTextComponent target = getTextComponent(e);
+            final JTextComponent target = getTextComponent(e);
             if (isTargetEditable(target)) {
-                int caret = target.getCaretPosition();
-                try {
-                    Document doc = target.getDocument();
-                    if (doc instanceof BaseDocument) {
-                        BaseDocument doc2 = (BaseDocument)doc;
-                        int p = 0;
-                        try {
-                            doc2.atomicLock();
-                            String s = doc2.getText(caret, 1);
-                            // fixed can't delete space when execute "dw" command.
-                            if (' ' == s.charAt(0))
-                                p = Utilities.getWordEnd(target, caret);
-                            else
-                                p = org.netbeans.editor.Utilities.getWordEnd(target, caret);
-                        } catch (BadLocationException ex) {
-                            ex.printStackTrace();
-                        } finally {
-                            doc2.atomicUnlock();
+            int caret = target.getCaretPosition();
+                Document doc = target.getDocument();
+                if (doc instanceof BaseDocument) {
+                    BaseDocument doc2 = (BaseDocument)doc;
+                    doc2.runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                String s = doc2.getText(caret, 1);
+                                int p = 0;
+                                // fixed can't delete space when execute "dw" command.
+                                if (' ' == s.charAt(0))
+                                    p = LineDocumentUtils.getWordEnd(getDocument(target), caret);
+                                else
+                                    p = LineDocumentUtils.getWordEnd(getDocument(target), caret);   
+                                String rtext = target.getDocument().getText(caret, p - caret);
+                                copyContentToClipboard(rtext);
+                                target.getDocument().remove(caret, p - caret);                                        
+                            } catch (BadLocationException e) {
+                            }                              
                         }
-                        String rtext = target.getDocument().getText(caret, p - caret);
-                        copyContentToClipboard(rtext);
-                        target.getDocument().remove(caret, p - caret);
-                    }
-                    //int position = org.netbeans.editor.Utilities.getWordEnd(target, caret);
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
+                    });
+
                 }
                 
             }
@@ -1435,7 +1404,7 @@ public class EVIActionFacade {
             if (isTargetEditable(target)) {
                 int caret= target.getCaretPosition();
                 try {
-                    int position = org.netbeans.editor.Utilities.getWordStart(target, caret);
+                    int position = LineDocumentUtils.getWordStart(getDocument(target), caret);
                     if ((position == caret) && (caret > 0)) {
                         position = getPreviousWord(target, caret);
                     }
@@ -1580,31 +1549,28 @@ public class EVIActionFacade {
             JTextComponent target = getTextComponent(e);
             if (isTargetEditable(target)) {
                 int caret = target.getCaretPosition();
-                try {
-                    Document doc = target.getDocument();
-                    if (doc instanceof BaseDocument) {
-                        BaseDocument doc2 = (BaseDocument)doc;
-                        int p = 0;
-                        try {
-                            doc2.atomicLock();
-                            String s = doc2.getText(caret, 1);
-                            // fixed can't delete space when execute "dw" command.
-                            if (' ' == s.charAt(0))
-                                p = Utilities.getWordEnd(target, caret);
-                            else
-                                p = org.netbeans.editor.Utilities.getWordEnd(target, caret);
-                        } catch (BadLocationException ex) {
-                            ex.printStackTrace();
-                        } finally {
-                            doc2.atomicUnlock();
+                Document doc = target.getDocument();
+                if (doc instanceof BaseDocument) {
+                    BaseDocument doc2 = (BaseDocument)doc;
+                    doc2.runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            int p = 0;
+                            try {
+                                String s = doc2.getText(caret, 1);
+                                // fixed can't delete space when execute "dw" command.
+                                if (' ' == s.charAt(0))
+                                    p = Utilities.getWordEnd(target, caret);
+                                else
+                                    p = LineDocumentUtils.getWordEnd(getDocument(target), caret);
+                                String rtext = target.getDocument().getText(caret, p - caret);
+                                copyContentToClipboard(rtext);
+                                target.getDocument().remove(caret, p - caret);                                       
+                            } catch (BadLocationException ex) {
+                                ex.printStackTrace();
+                            }
                         }
-                        String rtext = target.getDocument().getText(caret, p - caret);
-                        copyContentToClipboard(rtext);
-                        target.getDocument().remove(caret, p - caret);
-                    }
-                    //int position = org.netbeans.editor.Utilities.getWordEnd(target, caret);
-                } catch (BadLocationException ex) {
-                    ex.printStackTrace();
+                    });
                 }
                 removeEVIKeymap(target);
             }
@@ -2280,13 +2246,13 @@ public class EVIActionFacade {
             JTextComponent target = getTextComponent(e);
             if (isTargetEnabled(target) && (content != null)) {
                 BaseDocument doc = org.netbeans.editor.Utilities.getDocument(target);
-                int numeric = org.netbeans.editor.Utilities.getRowCount(doc);
+                int numeric = LineDocumentUtils.getLineCount(doc);
                 try {
                     int goLine = Integer.parseInt(content);
                     if (goLine > numeric) {
                         goLine = numeric;
                     }
-                    int start = org.netbeans.editor.Utilities.getRowStartFromLineOffset(doc, goLine - 1);
+                    int start = LineDocumentUtils.getLineStartFromIndex(doc, goLine - 1);
                     if (start != -1) {
                         target.setCaretPosition(start);
                     } else {
@@ -2388,8 +2354,8 @@ public class EVIActionFacade {
             if (isTargetEnabled(target)) {
                 int caret = target.getCaretPosition();
                 try {
-                    int ws = org.netbeans.editor.Utilities.getWordStart(target, caret);
-                    int we = org.netbeans.editor.Utilities.getWordEnd(target, caret);
+                    int ws = LineDocumentUtils.getWordStart(getDocument(target), caret);
+                    int we = LineDocumentUtils.getWordEnd(getDocument(target), caret);
                     String word = target.getText(ws, we - ws);
                     if (word.length() == 0)
                         return ;
@@ -2477,27 +2443,29 @@ public class EVIActionFacade {
         public void execute(ActionEvent e, String content) {
             JTextComponent target = getTextComponent(e);
             if (isTargetEditable(target)) {
-                String rtext = getContentFromClipboard();
-                int p = target.getCaretPosition();
-                if ('\n' == rtext.charAt(0)) {
-                    rtext = rtext.substring(1);
-                }
                 Document doc = target.getDocument();
                 if (doc instanceof BaseDocument) {
-                    BaseDocument doc2 = (BaseDocument)doc;
-                    try {
-                        doc2.atomicLock();
-                        int begin = getRowStart(target, p);
-                        int newp = 0;
-                        doc2.insertString(begin, rtext, null);
-                        newp = begin + rtext.length();
-                        if (rtext.charAt(rtext.length() - 1) != '\n')
-                            doc2.insertString(newp, "\n", null);
-                    } catch (BadLocationException ex) {
-                        //
-                    } finally {
-                        doc2.atomicUnlock();
-                    }
+                    final BaseDocument doc2 = (BaseDocument)doc;
+                    doc2.runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            String rtext = getContentFromClipboard();
+                            int p = target.getCaretPosition();
+                            if ('\n' == rtext.charAt(0)) {
+                                rtext = rtext.substring(1);
+                            }                            
+                            try {
+                                int begin = getRowStart(target, p);
+                                int newp = 0;
+                                doc2.insertString(begin, rtext, null);
+                                newp = begin + rtext.length();
+                                if (rtext.charAt(rtext.length() - 1) != '\n')
+                                    doc2.insertString(newp, "\n", null);
+                            } catch (BadLocationException ex) {
+                                //
+                            }                       
+                        }
+                    });
                 }
             }
         }
@@ -2507,72 +2475,75 @@ public class EVIActionFacade {
     protected static class PasteSelectedRectangleTextAction implements CommandAction {
         
         public void execute(ActionEvent e, String content) {
-            JTextComponent target = getTextComponent(e);
+            final JTextComponent target = getTextComponent(e);
             if (isTargetEditable(target)) {
                 //List<HighlightLine> queue = HighlightLineQueue.getInstance().getQueue();
-                HighlightLineQueue lineQueue = getRespository().getEditorState(target).getHighlightLineQueue();
+                final HighlightLineQueue lineQueue = getRespository().getEditorState(target).getHighlightLineQueue();
                 if (!lineQueue.isValid())
                     return ;
-                List<HighlightLine> queue = lineQueue.getQueue();
+                final List<HighlightLine> queue = lineQueue.getQueue();
                 if (queue.isEmpty())
                     return ;
                 if (target.getDocument() instanceof BaseDocument) {
-                    BaseDocument doc = (BaseDocument) target.getDocument();
-                    try {
-                        doc.atomicLock();
-                        int qsize = queue.size();
-                        int cp = target.getCaretPosition();
-                        int ls = Utilities.getRowStart(target, cp); //for used to padding backspaces
-                        int length = cp - ls; //the lengths that it's from line start to current caret position.
-                        int tempLength = 0;
-                        Rectangle r = target.modelToView(cp);
-                        Rectangle temp = null;
-                        int icaret0 = cp;
-                        int icaret1 = 0;
-                        boolean isLast = false;
-                        List<HighlightLine> lines = new ArrayList<HighlightLine>(queue);
-                        Collections.sort(lines);
-                        int tempc = 0;
-                        boolean once = false;
-                        for (HighlightLine line : lines) {
-                            //
-                            if (temp == null)
-                                doc.insertString(icaret0, line.getText(), null);
-                            else if ((temp.y == r.y) || isLast) {
-                                isLast = true;
-                                int docLength = doc.getLength();
-                                if (once) {
-                                    doc.insertString(docLength, "\n", null);
-                                    docLength += 1;
-                                    once = false;
+                    final BaseDocument doc = (BaseDocument) target.getDocument();
+                    doc.runAtomic(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                int qsize = queue.size();
+                                int cp = target.getCaretPosition();
+                                int ls = Utilities.getRowStart(target, cp); //for used to padding backspaces
+                                int length = cp - ls; //the lengths that it's from line start to current caret position.
+                                int tempLength = 0;
+                                Rectangle r = target.modelToView(cp);
+                                Rectangle temp = null;
+                                int icaret0 = cp;
+                                int icaret1 = 0;
+                                boolean isLast = false;
+                                List<HighlightLine> lines = new ArrayList<HighlightLine>(queue);
+                                Collections.sort(lines);
+                                int tempc = 0;
+                                boolean once = false;
+                                for (HighlightLine line : lines) {
+                                    //
+                                    if (temp == null)
+                                        doc.insertString(icaret0, line.getText(), null);
+                                    else if ((temp.y == r.y) || isLast) {
+                                        isLast = true;
+                                        int docLength = doc.getLength();
+                                        if (once) {
+                                            doc.insertString(docLength, "\n", null);
+                                            docLength += 1;
+                                            once = false;
+                                        }
+                                        doc.insertString(docLength, paddingBackspaces(length) + line.getText() + "\n", null);
+                                    } else if (temp.x != r.x) {//maybe be two,one temp and r at different column, the other one is chars size is different in different lines.
+                                        tempLength = length - getLengths(target, icaret0);
+                                        if (tempLength > 0) {
+                                            icaret1 = Utilities.getRowEnd(target, icaret0);
+                                            doc.insertString(icaret1, paddingBackspaces(tempLength) + line.getText(), null);
+                                        } else
+                                            doc.insertString(icaret0, line.getText(), null);
+                                    } else {
+                                        doc.insertString(icaret0, line.getText(), null);
+                                    }
+                                    //
+                                    if (!isLast) {
+                                        tempc = icaret0;
+                                        icaret0 = Utilities.getPositionBelow(target, icaret0, target.modelToView(cp).x); //always similar for x-coodinator
+                                        temp = target.modelToView(icaret0);
+                                        if (tempc == icaret0) {
+                                            isLast = true;
+                                            once = true;
+                                        }
+                                    }
                                 }
-                                doc.insertString(docLength, paddingBackspaces(length) + line.getText() + "\n", null);
-                            } else if (temp.x != r.x) {//maybe be two,one temp and r at different column, the other one is chars size is different in different lines.
-                                tempLength = length - getLengths(target, icaret0);
-                                if (tempLength > 0) {
-                                    icaret1 = Utilities.getRowEnd(target, icaret0);
-                                    doc.insertString(icaret1, paddingBackspaces(tempLength) + line.getText(), null);
-                                } else
-                                    doc.insertString(icaret0, line.getText(), null);
-                            } else {
-                                doc.insertString(icaret0, line.getText(), null);
-                            }
-                            //
-                            if (!isLast) {
-                                tempc = icaret0;
-                                icaret0 = Utilities.getPositionBelow(target, icaret0, target.modelToView(cp).x); //always similar for x-coodinator
-                                temp = target.modelToView(icaret0);
-                                if (tempc == icaret0) {
-                                    isLast = true;
-                                    once = true;
-                                }
-                            }
+                            } catch (BadLocationException ex) {
+                                ex.printStackTrace();
+                            }                        
                         }
-                    } catch (BadLocationException ex) {
-                        ex.printStackTrace();
-                    } finally {
-                        doc.atomicUnlock();
-                    }
+                    });
+
                 }
             }
         }

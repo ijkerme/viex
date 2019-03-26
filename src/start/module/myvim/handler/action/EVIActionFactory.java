@@ -17,6 +17,7 @@ import javax.swing.text.Caret;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import javax.swing.text.StyledDocument;
+import org.netbeans.api.editor.document.LineDocumentUtils;
 import org.netbeans.editor.BaseDocument;
 import org.netbeans.modules.editor.NbEditorUtilities;
 import org.openide.filesystems.FileObject;
@@ -66,24 +67,27 @@ class EVIActionFactory {
                         HighlightLineQueue lineQueue = getRespository().getEditorState(target).getHighlightLineQueue();
                         if (lineQueue.isValid() || lineQueue.isDeleted())
                             return ;
-                        bdoc.atomicLock();
-                        try {
-                            //List<HighlightLine> queue = HighlightLineQueue.getInstance().getQueue();
-                            List<HighlightLine> queue = lineQueue.getQueue();
-                            List<HighlightLine> lines = new ArrayList<HighlightLine>(queue);
-                            Collections.sort(lines);
-                            int rcounts = 0;
-                            for (HighlightLine line : lines) {
-                                bdoc.remove(line.getStart() - rcounts, line.getEnd() - line.getStart());//是不是要减去被删除的呢？要不接下来的删除会不会出错?
-                                rcounts += (line.getEnd() - line.getStart());
+                        bdoc.runAtomic(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    //List<HighlightLine> queue = HighlightLineQueue.getInstance().getQueue();
+                                    List<HighlightLine> queue = lineQueue.getQueue();
+                                    List<HighlightLine> lines = new ArrayList<HighlightLine>(queue);
+                                    Collections.sort(lines);
+                                    int rcounts = 0;
+                                    for (HighlightLine line : lines) {
+                                        bdoc.remove(line.getStart() - rcounts, line.getEnd() - line.getStart());//是不是要减去被删除的呢？要不接下来的删除会不会出错?
+                                        rcounts += (line.getEnd() - line.getStart());
+                                    }
+                                    lineQueue.setDeleted(true);
+                                    lineQueue.setValid(true);
+                                } catch (BadLocationException ex) {
+                                    //ex.printStackTrace();
+                                }                               
                             }
-                            lineQueue.setDeleted(true);
-                            lineQueue.setValid(true);
-                        } catch (BadLocationException ex) {
-                            //ex.printStackTrace();
-                        } finally {
-                            bdoc.atomicUnlock();
-                        }
+                        });
+
                     }
                 } else {
                     String rtext = target.getSelectedText();
@@ -118,7 +122,7 @@ class EVIActionFactory {
                         if (text == null)
                             return ;
                         // Remove a text pair
-                        int le = org.netbeans.editor.Utilities.getRowEnd((BaseDocument)doc, min);
+                        int le = LineDocumentUtils.getLineEnd((BaseDocument)doc, min);
                         String rs = doc.getText(min + 1, le - min);
                         int i = rs.indexOf(text);
                         if (i != -1) {
@@ -172,16 +176,16 @@ class EVIActionFactory {
             int we = 0;
             try {
                 String text = target.getSelectedText();
+                final BaseDocument doc = getDocument(target);
                 if (text == null) {
-                    ws = org.netbeans.editor.Utilities.getWordStart(target, p);
-                    we = org.netbeans.editor.Utilities.getWordEnd(target, p);
+                    ws = LineDocumentUtils.getWordStart(doc, p);
+                    we = LineDocumentUtils.getWordStart(doc, p);
                     if (ws == we)
                         return ;
                 } else {
                     ws = Math.min(caret.getDot(), caret.getMark());
                     we = Math.max(caret.getDot(), caret.getMark());
                 }
-                Document doc = target.getDocument();
                 String pair = VIEXPairTable.getInstance().getPairValue(CATEGORY.CHAR_PAIR, s);
                 if (pair != null) {
                     doc.insertString(ws, s, null);

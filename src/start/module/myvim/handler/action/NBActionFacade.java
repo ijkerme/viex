@@ -9,6 +9,7 @@ import javax.swing.Action;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Caret;
 import javax.swing.text.JTextComponent;
+import org.netbeans.api.editor.document.LineDocumentUtils;
 import org.netbeans.api.editor.fold.Fold;
 import org.netbeans.api.editor.fold.FoldHierarchy;
 import org.netbeans.api.editor.fold.FoldUtilities;
@@ -557,11 +558,11 @@ public class NBActionFacade {
             public void run () {
                 try {
                     int indent = newIndent < 0 ? 0 : newIndent;
-                    int firstNW = Utilities.getRowFirstNonWhite(doc, pos);
+                    int firstNW = LineDocumentUtils.getLineFirstNonWhitespace(doc, pos);
                     if (firstNW == -1) { // valid first non-blank
-                        firstNW = Utilities.getRowEnd(doc, pos);
+                        firstNW = LineDocumentUtils.getLineEnd(doc, pos);
                     }
-                    int replacePos = Utilities.getRowStart(doc, pos);
+                    int replacePos = LineDocumentUtils.getLineStart(doc, pos);
                     int removeLen = firstNW - replacePos;
                     CharSequence removeText = DocumentUtilities.getText(doc, replacePos, removeLen);
                     String newIndentText = IndentUtils.createIndentString(doc, indent);
@@ -639,11 +640,11 @@ public class NBActionFacade {
                         return;
                     }
                     int indentDelta = shiftCnt * shiftWidth;
-                    int end = (endPos > 0 && Utilities.getRowStart(doc, endPos) == endPos) ?
+                    int end = (endPos > 0 && LineDocumentUtils.getLineStart(doc, endPos) == endPos) ?
                         endPos - 1 : endPos;
 
-                    int lineStartOffset = Utilities.getRowStart(doc, startPos );
-                    int lineCount = Utilities.getRowCount(doc, startPos, end);
+                    int lineStartOffset = LineDocumentUtils.getLineStart(doc, startPos );
+                    int lineCount = LineDocumentUtils.getLineCount(doc, startPos, end);
                     for (int i = lineCount - 1; i >= 0; i--) {
                         int indent = Utilities.getRowIndent(doc, lineStartOffset);
                         int newIndent = (indent == -1) ? 0 : // Zero indent if row is white
@@ -652,7 +653,7 @@ public class NBActionFacade {
                                     / shiftWidth * shiftWidth);
                                 
                         changeRowIndent(doc, lineStartOffset, Math.max(newIndent, 0));
-                        lineStartOffset = Utilities.getRowStart(doc, lineStartOffset, +1);
+                        lineStartOffset = LineDocumentUtils.getLineStartFromIndex(doc, lineStartOffset);
                     }
                 } catch (BadLocationException ex) {
                     badLocationExceptions [0] = ex;
@@ -670,7 +671,7 @@ public class NBActionFacade {
             ind = -ind;
         }
 
-        if (Utilities.isRowWhite(doc, dotPos)) {
+        if (LineDocumentUtils.isLineWhitespace(doc, dotPos)) {
             ind += Utilities.getVisualColumn(doc, dotPos);
         } else {
             ind += Utilities.getRowIndent(doc, dotPos);
@@ -702,18 +703,18 @@ public class NBActionFacade {
                         return;
                     }
                     int indentDelta = right ? shiftWidth : -shiftWidth;
-                    int end = (endPos > 0 && Utilities.getRowStart(doc, endPos) == endPos) ?
+                    int end = (endPos > 0 && LineDocumentUtils.getLineStart(doc, endPos) == endPos) ?
                         endPos - 1 : endPos;
 
-                    int lineStartOffset = Utilities.getRowStart(doc, startPos );
-                    int lineCount = Utilities.getRowCount(doc, startPos, end);
+                    int lineStartOffset = LineDocumentUtils.getLineStart(doc, startPos );
+                    int lineCount = LineDocumentUtils.getLineCount(doc, startPos, end);
                     for (int i = lineCount - 1; i >= 0; i--) {
                         int indent = Utilities.getRowIndent(doc, lineStartOffset);
                         int newIndent = (indent == -1) ? 0 : // Zero indent if row is white
                                 indent + indentDelta;
                                 
                         changeRowIndent(doc, lineStartOffset, Math.max(newIndent, 0));
-                        lineStartOffset = Utilities.getRowStart(doc, lineStartOffset, +1);
+                        lineStartOffset = LineDocumentUtils.getLineStartFromIndex(doc, lineStartOffset);
                     }
                 } catch (BadLocationException ex) {
                     badLocationExceptions [0] = ex;

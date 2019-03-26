@@ -10,7 +10,7 @@ import org.openide.util.Lookup;
  *
  * @author xiaomj
  */
-public class StatusMgr {
+public class StatusLineMgr {
     
     public void updateCMD(final JLabel label, final String cmd) {
         if (SwingUtilities.isEventDispatchThread()) {
@@ -29,8 +29,6 @@ public class StatusMgr {
         Collection<? extends StatusLineElementProvider> all = Lookup.getDefault().lookupAll(StatusLineElementProvider.class);
         for (StatusLineElementProvider a : all) {
             if (a instanceof StatusLineElementProviderImpl) {
-                //JLabel ele = (JLabel) ((VIEXStatuLine) a).getStatusLineElement();
-                //ele.doUpdate(); // or whatever method you need to call
                 return (StatusLineElementProviderImpl) a;
             }
         }        
